@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sistema Transporte — Admin / Chofer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="appbar">
+        <div class="brand">
+            <div class="logo">RV</div>
+            <div>
+                <div class="title">Registro & Rutas de Vans</div>
+                <div class="small">Panel Admin / Chofer · Blanco & Turquesa</div>
+            </div>
+        </div>
+        <div class="controls">
+            <div class="role-switch">
+                <button id="btnAdminView" class="btn">🔒 Admin</button>
+                <button id="btnDriverView" class="btn">🧑‍✈️ Chofer</button>
+            </div>
+            <button id="toggleTheme" class="btn" title="Cambiar tema">🌙</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="adminArea" class="grid" style="display:none">
+            <section class="card stack">
+                <h3 class="section-title">Registro de trabajador</h3>
+                <form id="workerForm" class="stack" autocomplete="off">
+                    <div class="field"><label for="name">Nombre</label><input id="name" required placeholder="Ej. Juan Pérez" /></div>
+                    <div class="field"><label for="address">Dirección (Autocomplete)</label><input id="address" required placeholder="Ej. Av. Siempre Viva 742, Santiago" /></div>
+                    <div class="twocol">
+                        <div class="field"><label for="phone">Teléfono</label><input id="phone" required placeholder="+56 9 xxxx xxxx" /></div>
+                        <div class="field"><label for="day">Día</label><select id="day" required></select></div>
+                    </div>
+                    <div class="twocol">
+                        <div class="field"><label for="shift">Turno</label><select id="shift" required><option value="Mañana">Mañana</option><option value="Tarde">Tarde</option><option value="Noche">Noche</option></select></div>
+                        <div class="field"><label for="notes">Notas (opcional)</label><input id="notes" placeholder="Referencia, portón, etc."/></div>
+                    </div>
+                    <div style="display:flex;gap:8px;justify-content:flex-end"><button type="reset" class="btn">Limpiar</button><button class="btn primary" type="submit">Agregar trabajador</button></div>
+                </form>
+
+                <div class="chips" id="stats"></div>
+
+                <div class="card" style="background:transparent;border:1px dashed var(--border)">
+                    <div class="field"><label for="start">Punto de partida (base/empresa)</label><input id="start" placeholder="Ingresa dirección o haz clic en mapa" /></div>
+                    <div style="display:flex;gap:8px;align-items:center"><button id="useMyLocation" class="btn">📍 Mi ubicación</button><span class="badge">Consejo: clic en el mapa para fijar origen</span></div>
+                </div>
+
+                <div class="card" style="background:transparent;border:1px dashed var(--border)">
+                    <div class="threecol">
+                        <div class="field"><label for="filterDayAdmin">Filtrar por día</label><select id="filterDayAdmin"></select></div>
+                        <div class="field"><label for="filterShiftAdmin">Filtrar por turno</label><select id="filterShiftAdmin"><option value="">Todos</option><option value="Mañana">Mañana</option><option value="Tarde">Tarde</option><option value="Noche">Noche</option></select></div>
+                        <div class="field"><label>&nbsp;</label><button id="buildRouteAdmin" class="btn primary" style="width:100%">🚐 Generar ruta</button></div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+                    <button id="exportBtn" class="btn">⬇️ Exportar</button>
+                    <input id="importFile" type="file" accept="application/json" style="display:none" />
+                    <button id="importBtn" class="btn">⬆️ Importar</button>
+                </div>
+            </section>
+
+            <section class="stack">
+                <div class="card"><h3 class="section-title">Mapa y ruta</h3><div id="map"></div></div>
+                <div class="card"><h3 class="section-title">Trabajadores</h3><div style="overflow:auto"><table class="table" id="workersTable"><thead><tr><th>#</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Día</th><th>Turno</th><th>Acciones</th></tr></thead><tbody></tbody></table></div></div>
+                <div class="card"><h3 class="section-title">Orden sugerido (cercano → lejano)</h3><ol id="routeList" style="margin:0 0 6px 18px"></ol><div id="routeSummary" class="chips"></div></div>
+            </section>
+        </div>
+
+        <div id="driverArea" style="display:none">
+            <div class="card" style="margin-bottom:12px;display:flex;gap:8px;align-items:center;justify-content:space-between">
+                <div style="display:flex;gap:8px;align-items:center">
+                    <strong>VISTA CHOFER</strong>
+                    <div class="small">Filtra por día para ver solo pasajeros de ese día</div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <label class="small">Día</label>
+                    <select id="filterDayDriver"></select>
+                    <button id="buildRouteDriver" class="btn primary">🚐 Ver ruta</button>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns:1fr 420px;gap:12px">
+                <section class="card">
+                    <h3 class="section-title">Lista de pasajeros</h3>
+                    <div style="overflow:auto"><table class="table" id="driverTable"><thead><tr><th>#</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th></tr></thead><tbody></tbody></table></div>
+                </section>
+                <section class="card"><h3 class="section-title">Mapa</h3><div id="mapDriver" style="height:420px;border-radius:12px;border:1px solid var(--border)"></div></section>
+            </div>
+        </div>
+
+        <p class="footer">Datos guardados en tu navegador (localStorage). La clave de API de Google Maps ya fue reemplazada.</p>
+    </main>
+
+    <dialog id="editDialog">
+        <div class="modal-header"><strong>Editar trabajador</strong><button class="btn" onclick="document.getElementById('editDialog').close()">✕</button></div>
+        <form id="editForm" class="modal-body">
+            <input type="hidden" id="editId" />
+            <div class="field"><label>Nombre</label><input id="editName" required /></div>
+            <div class="field"><label>Dirección</label><input id="editAddress" required /></div>
+            <div class="twocol"><div class="field"><label>Teléfono</label><input id="editPhone" required /></div><div class="field"><label>Día</label><select id="editDay" required></select></div></div>
+            <div class="twocol"><div class="field"><label>Turno</label><select id="editShift" required><option>Mañana</option><option>Tarde</option><option>Noche</option></select></div><div class="field"><label>Notas</label><input id="editNotes" /></div></div>
+            <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" onclick="document.getElementById('editDialog').close()">Cancelar</button><button class="btn primary">Guardar cambios</button></div>
+        </form>
+    </dialog>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvTE1ezjorLHKXHTaccgOqV-uQZQAehX8&libraries=places&callback=initMap"></script>
+    <script src="java.js"></script>
+</body>
+</html>
