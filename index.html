@@ -84,16 +84,43 @@
                 </div>
             </div>
 
+            <div class="card" style="margin-bottom: 12px">
+                <h3 class="section-title">Rutas sugeridas (según tu base)</h3>
+                <div style="overflow: auto">
+                    <table class="table" id="suggestedRoutesTable">
+                        <thead>
+                            <tr>
+                                <th>Ruta</th>
+                                <th>Distancia</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="grid" style="grid-template-columns:1fr 420px;gap:12px">
                 <section class="card">
                     <h3 class="section-title">Lista de pasajeros</h3>
-                    <div style="overflow:auto"><table class="table" id="driverTable"><thead><tr><th>#</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th></tr></thead><tbody></tbody></table></div>
+                    <div style="overflow:auto">
+                        <table class="table" id="driverTable">
+                            <thead>
+                                <tr><th>#</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </section>
-                <section class="card"><h3 class="section-title">Mapa</h3><div id="mapDriver" style="height:420px;border-radius:12px;border:1px solid var(--border)"></div></section>
+                <section class="card">
+                    <h3 class="section-title">Mapa</h3>
+                    <div id="mapDriver" style="height:420px;border-radius:12px;border:1px solid var(--border)"></div>
+                </section>
             </div>
         </div>
 
-        <p class="footer">Datos guardados en tu navegador (localStorage). La clave de API de Google Maps ya fue reemplazada.</p>
+        <p class="footer">Bienvenidos a RUTASMART</p>
     </main>
 
     <dialog id="editDialog">
@@ -102,9 +129,18 @@
             <input type="hidden" id="editId" />
             <div class="field"><label>Nombre</label><input id="editName" required /></div>
             <div class="field"><label>Dirección</label><input id="editAddress" required /></div>
-            <div class="twocol"><div class="field"><label>Teléfono</label><input id="editPhone" required /></div><div class="field"><label>Día</label><select id="editDay" required></select></div></div>
-            <div class="twocol"><div class="field"><label>Turno</label><select id="editShift" required><option>Mañana</option><option>Tarde</option><option>Noche</option></select></div><div class="field"><label>Notas</label><input id="editNotes" /></div></div>
-            <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" onclick="document.getElementById('editDialog').close()">Cancelar</button><button class="btn primary">Guardar cambios</button></div>
+            <div class="twocol">
+                <div class="field"><label>Teléfono</label><input id="editPhone" required /></div>
+                <div class="field"><label>Día</label><select id="editDay" required></select></div>
+            </div>
+            <div class="twocol">
+                <div class="field"><label>Turno</label><select id="editShift" required><option>Mañana</option><option>Tarde</option><option>Noche</option></select></div>
+                <div class="field"><label>Notas</label><input id="editNotes" /></div>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button type="button" class="btn" onclick="document.getElementById('editDialog').close()">Cancelar</button>
+                <button class="btn primary">Guardar cambios</button>
+            </div>
         </form>
     </dialog>
 
